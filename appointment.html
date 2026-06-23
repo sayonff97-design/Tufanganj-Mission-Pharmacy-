@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Book Appointment</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+font-family:Arial;
+background:#f4f4f4;
+padding:20px;
+}
+
+.container{
+max-width:500px;
+margin:auto;
+background:white;
+padding:20px;
+border-radius:10px;
+}
+
+input,select{
+width:100%;
+padding:10px;
+margin:10px 0;
+}
+
+button{
+background:#0d6efd;
+color:white;
+border:none;
+padding:12px;
+width:100%;
+cursor:pointer;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h2>Book Appointment</h2>
+
+<form>
+
+<input type="text" placeholder="Patient Name" required>
+
+<input type="tel" placeholder="Phone Number" required>
+
+<input type="email" placeholder="Email" required>
+
+<select required>
+<option>Select Doctor</option>
+<option>Dr. Sen</option>
+<option>Dr. Roy</option>
+<option>Dr. Das</option>
+</select>
+
+<input type="date" required>
+
+<button type="submit">
+Submit Appointment
+</button>
+
+</form>
+
+</div>
+
+</body>
+</html>
