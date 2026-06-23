@@ -1,30 +1,48 @@
+```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>User Login</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tufanganj Mission Pharmacy - Login</title>
+
 <style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, sans-serif;
+}
+
 body{
-font-family:Arial;
-background:#f4f4f4;
+background:#f4f8fc;
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
 }
 
-.box{
+.login-box{
 background:white;
 padding:30px;
-border-radius:10px;
 width:350px;
-box-shadow:0 0 10px rgba(0,0,0,.2);
+border-radius:12px;
+box-shadow:0 0 15px rgba(0,0,0,0.15);
+}
+
+h2{
+text-align:center;
+margin-bottom:20px;
+color:#0d6efd;
 }
 
 input{
 width:100%;
-padding:10px;
-margin:10px 0;
+padding:12px;
+margin-bottom:15px;
+border:1px solid #ccc;
+border-radius:6px;
 }
 
 button{
@@ -33,42 +51,64 @@ padding:12px;
 background:#0d6efd;
 color:white;
 border:none;
+border-radius:6px;
 cursor:pointer;
+font-size:16px;
 }
+
+button:hover{
+background:#0b5ed7;
+}
+
+.links{
+text-align:center;
+margin-top:15px;
+}
+
+.links a{
+text-decoration:none;
+color:#0d6efd;
+font-weight:bold;
+}
+
+.links a:hover{
+text-decoration:underline;
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="box">
+<div class="login-box">
 
 <h2>User Login</h2>
 
-<input type="email" placeholder="Email">
+<form>
 
-<input type="password" placeholder="Password">
+<input type="email" placeholder="Enter Email" required>
 
-<button>Login</button>
+<input type="password" placeholder="Enter Password" required>
 
-  ```html
-<div style="text-align:center; margin-top:15px;">
+<button type="submit">Login</button>
+
+</form>
+
+<div class="links">
+<p>
 Don't have an account?
+</p>
 
-<br><br>
+<br>
 
-<a href="register.html"
-style="
-text-decoration:none;
-color:#0d6efd;
-font-weight:bold;
-">
+<a href="register.html">
 Create New Account
 </a>
 
 </div>
-```
 
 </div>
 
 </body>
 </html>
+```
