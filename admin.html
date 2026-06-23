@@ -1,0 +1,198 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+display:flex;
+background:#f4f6f9;
+}
+
+.sidebar{
+width:250px;
+height:100vh;
+background:#0d6efd;
+color:white;
+padding:20px;
+position:fixed;
+}
+
+.sidebar h2{
+margin-bottom:30px;
+}
+
+.sidebar ul{
+list-style:none;
+}
+
+.sidebar ul li{
+padding:15px 0;
+border-bottom:1px solid rgba(255,255,255,0.2);
+cursor:pointer;
+}
+
+.main{
+margin-left:250px;
+padding:30px;
+width:100%;
+}
+
+.cards{
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+margin-bottom:30px;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,.1);
+flex:1;
+min-width:200px;
+}
+
+.card h3{
+color:#666;
+}
+
+.card p{
+font-size:30px;
+font-weight:bold;
+color:#0d6efd;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+box-shadow:0 0 10px rgba(0,0,0,.1);
+}
+
+table th,table td{
+padding:12px;
+border:1px solid #ddd;
+text-align:center;
+}
+
+table th{
+background:#0d6efd;
+color:white;
+}
+
+.approve{
+background:green;
+color:white;
+border:none;
+padding:8px 12px;
+cursor:pointer;
+}
+
+.reject{
+background:red;
+color:white;
+border:none;
+padding:8px 12px;
+cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+<h2>Admin Panel</h2>
+
+<ul>
+<li>Dashboard</li>
+<li>Appointments</li>
+<li>Patients</li>
+<li>Doctors</li>
+<li>Settings</li>
+<li>Logout</li>
+</ul>
+
+</div>
+
+<div class="main">
+
+<h1>Dashboard</h1>
+
+<br>
+
+<div class="cards">
+
+<div class="card">
+<h3>Total Appointments</h3>
+<p>45</p>
+</div>
+
+<div class="card">
+<h3>Total Patients</h3>
+<p>120</p>
+</div>
+
+<div class="card">
+<h3>Doctors</h3>
+<p>8</p>
+</div>
+
+</div>
+
+<h2>Recent Appointments</h2>
+
+<br>
+
+<table>
+
+<tr>
+<th>Name</th>
+<th>Phone</th>
+<th>Doctor</th>
+<th>Date</th>
+<th>Action</th>
+</tr>
+
+<tr>
+<td>Rahul Roy</td>
+<td>9876543210</td>
+<td>Dr. Sen</td>
+<td>25-06-2026</td>
+<td>
+<button class="approve">Approve</button>
+<button class="reject">Reject</button>
+</td>
+</tr>
+
+<tr>
+<td>Amit Das</td>
+<td>9123456780</td>
+<td>Dr. Roy</td>
+<td>26-06-2026</td>
+<td>
+<button class="approve">Approve</button>
+<button class="reject">Reject</button>
+</td>
+</tr>
+
+</table>
+
+</div>
+
+</body>
+</html>
+```
