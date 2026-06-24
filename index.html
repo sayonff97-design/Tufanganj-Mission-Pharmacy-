@@ -1,407 +1,567 @@
-/* ===== RESET & VARIABLES ===== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tufanganj Mission Pharmacy - Your Trusted Healthcare Partner</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ===== NAVIGATION ===== -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-heartbeat"></i>
+                <span>Tufanganj <span class="highlight">Mission</span> Pharmacy</span>
+            </div>
+            
+            <div class="nav-menu" id="navMenu">
+                <a href="#home" class="active">Home</a>
+                <a href="#about">About</a>
+                <a href="#doctors">Doctors</a>
+                <a href="#services">Services</a>
+                <a href="#testimonials">Testimonials</a>
+                <a href="#contact">Contact</a>
+            </div>
+            
+            <div class="nav-actions">
+                <button class="btn-appointment" onclick="window.location.href='appointment.html'">
+                    <i class="fas fa-calendar-check"></i> Book Appointment
+                </button>
+                <button class="btn-login" id="loginBtn" onclick="handleAuth()">
+                    <i class="fas fa-user"></i> <span id="authText">Login</span>
+                </button>
+            </div>
+            
+            <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
 
-:root {
-    --primary: #0a7e8c;
-    --primary-dark: #065a66;
-    --primary-light: #e8f5f7;
-    --secondary: #ff6b35;
-    --secondary-light: #fff0eb;
-    --accent: #6c5ce7;
-    --gradient: linear-gradient(135deg, #0a7e8c 0%, #6c5ce7 100%);
-    --gradient-secondary: linear-gradient(135deg, #ff6b35 0%, #f9a825 100%);
-    --text-dark: #1a1a2e;
-    --text-muted: #4a4a6a;
-    --text-light: #6c6c8a;
-    --white: #ffffff;
-    --gray-50: #f8f9fa;
-    --gray-100: #f1f3f5;
-    --gray-200: #e9ecef;
-    --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
-    --shadow: 0 4px 20px rgba(0,0,0,0.08);
-    --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
-    --shadow-xl: 0 12px 60px rgba(0,0,0,0.15);
-    --radius: 16px;
-    --radius-sm: 10px;
-    --radius-full: 50px;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
+    <!-- ===== HERO SECTION ===== -->
+    <section class="hero" id="home">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    Trusted Healthcare Since 2020
+                </div>
+                <h1>Your Health, <br><span class="gradient-text">Our Priority</span></h1>
+                <p>Experience world-class healthcare with compassionate doctors, modern facilities, and personalized care at Tufanganj Mission Pharmacy.</p>
+                
+                <div class="hero-buttons">
+                    <button class="btn-primary" onclick="window.location.href='appointment.html'">
+                        <i class="fas fa-calendar-plus"></i> Book Appointment
+                    </button>
+                    <button class="btn-secondary" onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})">
+                        <i class="fas fa-play-circle"></i> Learn More
+                    </button>
+                </div>
+                
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-star" style="color: #f9a825;"></i>
+                        <div>
+                            <span>4.9/5</span>
+                            <small>Google Rating</small>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-user-md" style="color: #0a7e8c;"></i>
+                        <div>
+                            <span>10+</span>
+                            <small>Expert Doctors</small>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-calendar-check" style="color: #ff6b35;"></i>
+                        <div>
+                            <span>1000+</span>
+                            <small>Happy Patients</small>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-clock" style="color: #6c5ce7;"></i>
+                        <div>
+                            <span>24/7</span>
+                            <small>Emergency Care</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-image">
+                <div class="hero-image-wrapper">
+                    <i class="fas fa-hospital-user"></i>
+                    <div class="floating-card card-1">
+                        <i class="fas fa-stethoscope"></i>
+                        <span>Expert Care</span>
+                    </div>
+                    <div class="floating-card card-2">
+                        <i class="fas fa-heart"></i>
+                        <span>Safe & Trusted</span>
+                    </div>
+                    <div class="floating-card card-3">
+                        <i class="fas fa-user-md"></i>
+                        <span>10+ Doctors</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-html {
-    scroll-behavior: smooth;
-}
+    <!-- ===== ABOUT SECTION ===== -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">About Us</span>
+                <h2>Providing Quality Healthcare <br>to Our Community</h2>
+                <p>We are committed to delivering exceptional medical services with compassion and excellence.</p>
+            </div>
+            
+            <div class="about-grid">
+                <div class="about-image-grid">
+                    <div class="about-image-main">
+                        <i class="fas fa-clinic-medical"></i>
+                    </div>
+                    <div class="about-image-small">
+                        <i class="fas fa-microscope"></i>
+                    </div>
+                    <div class="about-image-small">
+                        <i class="fas fa-ambulance"></i>
+                    </div>
+                </div>
+                
+                <div class="about-content">
+                    <h3>Your Trusted Healthcare Partner</h3>
+                    <p>Tufanganj Mission Pharmacy was established in 2020 with a vision to provide affordable, high-quality healthcare to the people of Tufanganj and surrounding areas.</p>
+                    
+                    <div class="about-features">
+                        <div class="feature">
+                            <div class="feature-icon">
+                                <i class="fas fa-hand-holding-heart"></i>
+                            </div>
+                            <div>
+                                <h4>Compassionate Care</h4>
+                                <p>Every patient receives personalized attention and care.</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">
+                                <i class="fas fa-microscope"></i>
+                            </div>
+                            <div>
+                                <h4>Modern Technology</h4>
+                                <p>State-of-the-art medical equipment for accurate diagnosis.</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <div>
+                                <h4>Expert Doctors</h4>
+                                <p>Highly qualified and experienced medical professionals.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="about-cta">
+                        <div class="cta-item">
+                            <span class="number">45+</span>
+                            <span class="label">Google Reviews</span>
+                        </div>
+                        <div class="cta-item">
+                            <span class="number">4.9</span>
+                            <span class="label">Average Rating</span>
+                        </div>
+                        <button class="btn-primary" onclick="window.location.href='#contact'">
+                            Contact Us <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    line-height: 1.7;
-    color: var(--text-dark);
-    background: var(--white);
-    overflow-x: hidden;
-}
+    <!-- ===== DOCTORS SECTION ===== -->
+    <section class="doctors" id="doctors">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Our Team</span>
+                <h2>Meet Our Expert Doctors</h2>
+                <p>Highly qualified and experienced medical professionals dedicated to your health.</p>
+            </div>
+            
+            <div class="doctors-grid">
+                <div class="doctor-card">
+                    <div class="doctor-image">
+                        <i class="fas fa-user-md"></i>
+                        <span class="doctor-status online"><i class="fas fa-circle"></i> Available</span>
+                    </div>
+                    <h4>Dr. Subrata Mondal</h4>
+                    <span class="doctor-specialty">MBBS, MD (Medicine)</span>
+                    <p>General Medicine Specialist with 10+ years of experience.</p>
+                    <div class="doctor-meta">
+                        <span><i class="fas fa-clock"></i> 10 AM - 5 PM</span>
+                        <span><i class="fas fa-calendar"></i> Mon-Sat</span>
+                    </div>
+                    <button class="btn-book" onclick="window.location.href='appointment.html'">
+                        Book Appointment <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                
+                <div class="doctor-card">
+                    <div class="doctor-image">
+                        <i class="fas fa-user-md"></i>
+                        <span class="doctor-status online"><i class="fas fa-circle"></i> Available</span>
+                    </div>
+                    <h4>Dr. Mousumi Sarkar</h4>
+                    <span class="doctor-specialty">MBBS, DGO</span>
+                    <p>Gynecology & Obstetrics specialist with expertise in women's health.</p>
+                    <div class="doctor-meta">
+                        <span><i class="fas fa-clock"></i> 9 AM - 4 PM</span>
+                        <span><i class="fas fa-calendar"></i> Mon-Sat</span>
+                    </div>
+                    <button class="btn-book" onclick="window.location.href='appointment.html'">
+                        Book Appointment <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                
+                <div class="doctor-card">
+                    <div class="doctor-image">
+                        <i class="fas fa-user-md"></i>
+                        <span class="doctor-status offline"><i class="fas fa-circle"></i> Offline</span>
+                    </div>
+                    <h4>Dr. Amit Roy</h4>
+                    <span class="doctor-specialty">BAMS, MD (Ayurveda)</span>
+                    <p>Ayurvedic medicine specialist offering holistic treatment approaches.</p>
+                    <div class="doctor-meta">
+                        <span><i class="fas fa-clock"></i> 11 AM - 6 PM</span>
+                        <span><i class="fas fa-calendar"></i> Mon-Sat</span>
+                    </div>
+                    <button class="btn-book" onclick="window.location.href='appointment.html'">
+                        Book Appointment <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                
+                <div class="doctor-card">
+                    <div class="doctor-image">
+                        <i class="fas fa-user-md"></i>
+                        <span class="doctor-status online"><i class="fas fa-circle"></i> Available</span>
+                    </div>
+                    <h4>Dr. Soma Das</h4>
+                    <span class="doctor-specialty">MBBS, MD (Pediatrics)</span>
+                    <p>Pediatric specialist caring for children with compassion and expertise.</p>
+                    <div class="doctor-meta">
+                        <span><i class="fas fa-clock"></i> 10 AM - 3 PM</span>
+                        <span><i class="fas fa-calendar"></i> Mon-Fri</span>
+                    </div>
+                    <button class="btn-book" onclick="window.location.href='appointment.html'">
+                        Book Appointment <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
-}
+    <!-- ===== SERVICES SECTION ===== -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Our Services</span>
+                <h2>Comprehensive Healthcare Services</h2>
+                <p>We offer a wide range of medical services to meet all your healthcare needs.</p>
+            </div>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <h4>General Checkup</h4>
+                    <p>Complete physical examination and health assessment.</p>
+                    <span class="service-tag">Popular</span>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h4>Cardiology</h4>
+                    <p>Heart disease diagnosis and treatment by experts.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-baby"></i>
+                    </div>
+                    <h4>Maternity Care</h4>
+                    <p>Pregnancy care and delivery services.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h4>Neurology</h4>
+                    <p>Neurological disorder diagnosis and treatment.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-lungs"></i>
+                    </div>
+                    <h4>Pulmonology</h4>
+                    <p>Asthma and respiratory problem treatment.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <h4>Pharmacy</h4>
+                    <p>Prescription medicines and healthcare products.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-ambulance"></i>
+                    </div>
+                    <h4>Emergency Care</h4>
+                    <p>24/7 emergency medical services.</p>
+                    <span class="service-tag">24/7</span>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-microscope"></i>
+                    </div>
+                    <h4>Diagnostic Lab</h4>
+                    <p>Advanced diagnostic and laboratory services.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-/* ===== SCROLLBAR ===== */
-::-webkit-scrollbar {
-    width: 8px;
-}
-::-webkit-scrollbar-track {
-    background: var(--gray-100);
-}
-::-webkit-scrollbar-thumb {
-    background: var(--primary);
-    border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-dark);
-}
+    <!-- ===== TESTIMONIALS SECTION ===== -->
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Testimonials</span>
+                <h2>What Our Patients Say</h2>
+                <p>Real reviews from our satisfied patients about their experience.</p>
+            </div>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p>"Very good mission pharmacy. All doctors are very good and owner is good."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div>
+                            <h4>Rahul Sharma</h4>
+                            <span>Google Review</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p>"All Doctor is best in Tufanganj Mission Pharmacy. Highly recommended!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div>
+                            <h4>Priya Das</h4>
+                            <span>Google Review</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p>"Excellent service and caring doctors. They truly care about their patients."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div>
+                            <h4>Ananya Sen</h4>
+                            <span>Google Review</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-/* ===== SECTION HEADER ===== */
-.section-header {
-    text-align: center;
-    max-width: 700px;
-    margin: 0 auto 60px;
-}
+    <!-- ===== CONTACT SECTION ===== -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Contact Us</span>
+                <h2>Get In Touch</h2>
+                <p>Have questions? We're here to help. Contact us today.</p>
+            </div>
+            
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="contact-card">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Visit Us</h4>
+                            <p>Tufanganj, Cooch Behar,<br>West Bengal, India</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-card">
+                        <i class="fas fa-phone-alt"></i>
+                        <div>
+                            <h4>Call Us</h4>
+                            <p><a href="tel:+916023195991">+91 60231 95991</a></p>
+                            <small>Available 8 AM - 9 PM</small>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-card">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email Us</h4>
+                            <p><a href="mailto:info@tufanganjpharmacy.com">info@tufanganjpharmacy.com</a></p>
+                            <small>We respond within 24 hours</small>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-card">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h4>Working Hours</h4>
+                            <p>Mon-Sat: 8 AM - 9 PM<br>Sunday: 10 AM - 5 PM</p>
+                        </div>
+                    </div>
+                    
+                    <div class="google-rating-badge">
+                        <i class="fab fa-google"></i>
+                        <div>
+                            <span>4.9</span>
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <small>45 Google Reviews</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-map">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d28612.653561982144!2d89.633333!3d26.316667!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39e3e8c8d4f3f7e7%3A0x8d7f3b7e5d7f3b7e!2sTufanganj%2C%20West%20Bengal!5e0!3m2!1sen!2sin!4v1700000000000" 
+                        width="100%" 
+                        height="450" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
 
-.section-tag {
-    display: inline-block;
-    background: var(--primary-light);
-    color: var(--primary);
-    padding: 6px 20px;
-    border-radius: var(--radius-full);
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-}
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3><i class="fas fa-heartbeat"></i> Tufanganj <span>Mission</span> Pharmacy</h3>
+                    <p>Your trusted healthcare partner providing quality medical services with compassion and excellence.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <a href="#home">Home</a>
+                    <a href="#about">About Us</a>
+                    <a href="#doctors">Doctors</a>
+                    <a href="#services">Services</a>
+                    <a href="#testimonials">Testimonials</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Our Services</h4>
+                    <a href="#">General Checkup</a>
+                    <a href="#">Cardiology</a>
+                    <a href="#">Maternity Care</a>
+                    <a href="#">Pediatrics</a>
+                    <a href="#">Pharmacy</a>
+                    <a href="#">Emergency Care</a>
+                </div>
+                
+                <div class="footer-contact">
+                    <h4>Contact Info</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> Tufanganj, Cooch Behar</p>
+                    <p><i class="fas fa-phone"></i> <a href="tel:+916023195991">+91 60231 95991</a></p>
+                    <p><i class="fas fa-envelope"></i> <a href="mailto:info@tufanganjpharmacy.com">info@tufanganjpharmacy.com</a></p>
+                    <p><i class="fas fa-clock"></i> Mon-Sat: 8 AM - 9 PM</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Tufanganj Mission Pharmacy. All Rights Reserved.</p>
+                <p>Made with <i class="fas fa-heart" style="color: #ff6b35;"></i> for better healthcare</p>
+            </div>
+        </div>
+    </footer>
 
-.section-header h2 {
-    font-size: 2.8rem;
-    font-weight: 800;
-    line-height: 1.2;
-    margin-bottom: 16px;
-    color: var(--text-dark);
-}
+    <!-- ===== SCROLL TO TOP ===== -->
+    <button class="scroll-top" id="scrollTopBtn">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
-.section-header p {
-    color: var(--text-light);
-    font-size: 1.1rem;
-    line-height: 1.8;
-}
-
-/* ===== BUTTONS ===== */
-.btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--gradient);
-    color: var(--white);
-    border: none;
-    padding: 14px 32px;
-    border-radius: var(--radius-full);
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: var(--transition);
-    box-shadow: 0 4px 15px rgba(10, 126, 140, 0.3);
-    text-decoration: none;
-}
-
-.btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 30px rgba(10, 126, 140, 0.4);
-}
-
-.btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--white);
-    color: var(--primary);
-    border: 2px solid var(--primary);
-    padding: 14px 32px;
-    border-radius: var(--radius-full);
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: var(--transition);
-    text-decoration: none;
-}
-
-.btn-secondary:hover {
-    background: var(--primary);
-    color: var(--white);
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-lg);
-}
-
-/* ===== NAVBAR ===== */
-.navbar {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    box-shadow: var(--shadow-sm);
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
-    padding: 0;
-    transition: var(--transition);
-    height: 72px;
-    display: flex;
-    align-items: center;
-}
-
-.navbar.scrolled {
-    box-shadow: var(--shadow);
-    background: rgba(255, 255, 255, 0.98);
-}
-
-.nav-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.nav-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: var(--text-dark);
-    cursor: pointer;
-    text-decoration: none;
-}
-
-.nav-logo i {
-    font-size: 1.6rem;
-    color: var(--primary);
-}
-
-.nav-logo .highlight {
-    color: var(--primary);
-}
-
-.nav-menu {
-    display: flex;
-    gap: 32px;
-    align-items: center;
-}
-
-.nav-menu a {
-    text-decoration: none;
-    color: var(--text-muted);
-    font-weight: 500;
-    font-size: 0.95rem;
-    transition: var(--transition);
-    position: relative;
-}
-
-.nav-menu a::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: var(--primary);
-    transition: var(--transition);
-}
-
-.nav-menu a:hover,
-.nav-menu a.active {
-    color: var(--primary);
-}
-
-.nav-menu a:hover::after,
-.nav-menu a.active::after {
-    width: 100%;
-}
-
-.nav-actions {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-}
-
-.btn-appointment {
-    background: var(--gradient);
-    color: var(--white);
-    border: none;
-    padding: 10px 24px;
-    border-radius: var(--radius-full);
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.9rem;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.btn-appointment:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-}
-
-.btn-login {
-    background: transparent;
-    color: var(--primary);
-    border: 2px solid var(--primary);
-    padding: 10px 24px;
-    border-radius: var(--radius-full);
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.9rem;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.btn-login:hover {
-    background: var(--primary);
-    color: var(--white);
-}
-
-.hamburger {
-    display: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: var(--text-dark);
-}
-
-/* ===== HERO SECTION ===== */
-.hero {
-    padding: 140px 0 80px;
-    background: linear-gradient(135deg, var(--primary-light) 0%, #d4edf0 50%, #f8f9fa 100%);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.hero::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -20%;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(10, 126, 140, 0.05) 0%, transparent 70%);
-    border-radius: 50%;
-}
-
-.hero-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: center;
-    position: relative;
-}
-
-.hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--white);
-    padding: 8px 20px;
-    border-radius: var(--radius-full);
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--primary);
-    box-shadow: var(--shadow-sm);
-    margin-bottom: 24px;
-}
-
-.hero-content h1 {
-    font-size: 3.8rem;
-    font-weight: 800;
-    line-height: 1.1;
-    margin-bottom: 20px;
-    color: var(--text-dark);
-}
-
-.gradient-text {
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.hero-content p {
-    font-size: 1.15rem;
-    color: var(--text-light);
-    line-height: 1.8;
-    margin-bottom: 32px;
-    max-width: 500px;
-}
-
-.hero-buttons {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    margin-bottom: 48px;
-}
-
-.hero-stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-    padding-top: 32px;
-    border-top: 2px solid rgba(10, 126, 140, 0.15);
-}
-
-.stat-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.stat-item i {
-    font-size: 1.8rem;
-    opacity: 0.8;
-}
-
-.stat-item div {
-    display: flex;
-    flex-direction: column;
-}
-
-.stat-item span {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text-dark);
-}
-
-.stat-item small {
-    color: var(--text-light);
-    font-size: 0.8rem;
-}
-
-.hero-image {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.hero-image-wrapper {
-    position: relative;
-    width:
+    <script src="script.js"></script>
+</body>
+</html>
