@@ -1,198 +1,269 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard</title>
-
-<style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
-
-body{
-display:flex;
-background:#f4f6f9;
-}
-
-.sidebar{
-width:250px;
-height:100vh;
-background:#0d6efd;
-color:white;
-padding:20px;
-position:fixed;
-}
-
-.sidebar h2{
-margin-bottom:30px;
-}
-
-.sidebar ul{
-list-style:none;
-}
-
-.sidebar ul li{
-padding:15px 0;
-border-bottom:1px solid rgba(255,255,255,0.2);
-cursor:pointer;
-}
-
-.main{
-margin-left:250px;
-padding:30px;
-width:100%;
-}
-
-.cards{
-display:flex;
-gap:20px;
-flex-wrap:wrap;
-margin-bottom:30px;
-}
-
-.card{
-background:white;
-padding:20px;
-border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,.1);
-flex:1;
-min-width:200px;
-}
-
-.card h3{
-color:#666;
-}
-
-.card p{
-font-size:30px;
-font-weight:bold;
-color:#0d6efd;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-background:white;
-box-shadow:0 0 10px rgba(0,0,0,.1);
-}
-
-table th,table td{
-padding:12px;
-border:1px solid #ddd;
-text-align:center;
-}
-
-table th{
-background:#0d6efd;
-color:white;
-}
-
-.approve{
-background:green;
-color:white;
-border:none;
-padding:8px 12px;
-cursor:pointer;
-}
-
-.reject{
-background:red;
-color:white;
-border:none;
-padding:8px 12px;
-cursor:pointer;
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Tufanganj Mission Pharmacy</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a7e8c 0%, #6c5ce7 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background: white;
+            border-radius: 16px;
+            padding: 48px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .login-header .icon {
+            font-size: 3rem;
+            color: #0a7e8c;
+            margin-bottom: 12px;
+        }
+        
+        .login-header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #1a1a2e;
+        }
+        
+        .login-header p {
+            color: #6c6c8a;
+            font-size: 0.95rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #1a1a2e;
+            font-size: 0.9rem;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #0a7e8c;
+            box-shadow: 0 0 0 4px rgba(10, 126, 140, 0.1);
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #0a7e8c 0%, #6c5ce7 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(10, 126, 140, 0.3);
+        }
+        
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .error-message {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+            font-size: 0.9rem;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 16px;
+        }
+        
+        .back-link a {
+            color: #6c6c8a;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .back-link a:hover {
+            color: #0a7e8c;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </head>
-
 <body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="icon"><i class="fas fa-user-shield"></i></div>
+            <h1>Admin Login</h1>
+            <p>Enter your credentials to access dashboard</p>
+        </div>
+        
+        <div class="error-message" id="errorMessage">
+            <i class="fas fa-exclamation-circle"></i> <span id="errorText">Invalid credentials</span>
+        </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="adminEmail" placeholder="admin@tufanganjpharmacy.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="adminPassword" placeholder="Enter your password" required>
+            </div>
+            
+            <button type="submit" class="btn-login" id="loginBtn">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+        </form>
+        
+        <div class="back-link">
+            <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        </div>
+    </div>
 
-<div class="sidebar">
-<h2>Admin Panel</h2>
-
-<ul>
-<li>Dashboard</li>
-<li>Appointments</li>
-<li>Patients</li>
-<li>Doctors</li>
-<li>Settings</li>
-<li>Logout</li>
-</ul>
-
-</div>
-
-<div class="main">
-
-<h1>Dashboard</h1>
-
-<br>
-
-<div class="cards">
-
-<div class="card">
-<h3>Total Appointments</h3>
-<p>45</p>
-</div>
-
-<div class="card">
-<h3>Total Patients</h3>
-<p>120</p>
-</div>
-
-<div class="card">
-<h3>Doctors</h3>
-<p>8</p>
-</div>
-
-</div>
-
-<h2>Recent Appointments</h2>
-
-<br>
-
-<table>
-
-<tr>
-<th>Name</th>
-<th>Phone</th>
-<th>Doctor</th>
-<th>Date</th>
-<th>Action</th>
-</tr>
-
-<tr>
-<td>Rahul Roy</td>
-<td>9876543210</td>
-<td>Dr. Sen</td>
-<td>25-06-2026</td>
-<td>
-<button class="approve">Approve</button>
-<button class="reject">Reject</button>
-</td>
-</tr>
-
-<tr>
-<td>Amit Das</td>
-<td>9123456780</td>
-<td>Dr. Roy</td>
-<td>26-06-2026</td>
-<td>
-<button class="approve">Approve</button>
-<button class="reject">Reject</button>
-</td>
-</tr>
-
-</table>
-
-</div>
-
+    <script>
+        // ===== FIREBASE CONFIG =====
+        const firebaseConfig = {
+            apiKey: "AIzaSyAnQj7leUb86PwvOOhIIBhkQja0fvLzDNs",
+            authDomain: "tufanganj-mission-pharmacy.firebaseapp.com",
+            projectId: "tufanganj-mission-pharmacy",
+            storageBucket: "tufanganj-mission-pharmacy.firebasestorage.app",
+            messagingSenderId: "73171110361",
+            appId: "1:73171110361:web:0b519bdcd67bff4bac71c8",
+            measurementId: "G-JNR5F3F0MF"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        const form = document.getElementById('loginForm');
+        const emailInput = document.getElementById('adminEmail');
+        const passwordInput = document.getElementById('adminPassword');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            errorMessage.classList.remove('show');
+            
+            if (!email || !password) {
+                showError('Please enter both email and password');
+                return;
+            }
+            
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span class="spinner"></span> Logging in...';
+            
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                const userData = userDoc.data();
+                
+                if (userData && userData.role === 'admin') {
+                    window.location.href = 'admin-dashboard.html';
+                } else {
+                    await auth.signOut();
+                    showError('Access denied. You are not an admin.');
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+                }
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                let message = 'Invalid email or password';
+                if (error.code === 'auth/user-not-found') {
+                    message = 'No account found with this email';
+                } else if (error.code === 'auth/wrong-password') {
+                    message = 'Incorrect password';
+                } else if (error.code === 'auth/too-many-requests') {
+                    message = 'Too many attempts. Please try again later';
+                }
+                showError(message);
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+            }
+        });
+        
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.classList.add('show');
+        }
+    </script>
 </body>
 </html>
-```
