@@ -1,106 +1,353 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tufanganj Mission Pharmacy</title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<style>
-body{
-font-family:Arial,sans-serif;
-}
-
-.hero{
-background:linear-gradient(135deg,#0d6efd,#20c997);
-color:white;
-padding:100px 20px;
-text-align:center;
-}
-
-.review-card{
-border-radius:15px;
-box-shadow:0 0 15px rgba(0,0,0,.1);
-padding:20px;
-margin:10px;
-}
-
-footer{
-background:#222;
-color:white;
-padding:20px;
-text-align:center;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tufanganj Mission Pharmacy - স্বাস্থ্য সেবায় আপনার বিশ্বস্ত সঙ্গী</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-hospital"></i>
+                <span>Tufanganj Mission Pharmacy</span>
+            </div>
+            
+            <div class="nav-menu" id="navMenu">
+                <a href="#home">হোম</a>
+                <a href="#about">আমাদের সম্পর্কে</a>
+                <a href="#doctors">ডাক্তারগণ</a>
+                <a href="#services">সেবাসমূহ</a>
+                <a href="#contact">যোগাযোগ</a>
+            </div>
+            
+            <div class="nav-actions">
+                <button class="btn-appointment" onclick="window.location.href='appointment.html'">
+                    <i class="fas fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট
+                </button>
+                <button class="btn-login" id="loginBtn" onclick="handleAuth()">
+                    <i class="fas fa-user"></i> <span id="authText">লগইন</span>
+                </button>
+            </div>
+            
+            <div class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-<div class="container">
-<a class="navbar-brand" href="#">
-Tufanganj Mission Pharmacy
-</a>
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>আপনার স্বাস্থ্য আমাদের অগ্রাধিকার</h1>
+                <p>তুফানগঞ্জ মিশন ফার্মেসিতে আমরা আধুনিক চিকিৎসা সেবা ও মানবিক সেবার সমন্বয়ে কাজ করি। আমাদের দক্ষ ডাক্তারদের মাধ্যমে আপনি পাবেন উন্নতমানের স্বাস্থ্য সেবা।</p>
+                <div class="hero-buttons">
+                    <button class="btn-primary" onclick="window.location.href='appointment.html'">
+                        <i class="fas fa-calendar-plus"></i> অ্যাপয়েন্টমেন্ট বুক করুন
+                    </button>
+                    <button class="btn-secondary" onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})">
+                        <i class="fas fa-info-circle"></i> আরও জানুন
+                    </button>
+                </div>
+                
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-star"></i>
+                        <span>4.9/5</span>
+                        <small>(৪৫টি রিভিউ)</small>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-user-md"></i>
+                        <span>১০+</span>
+                        <small>বিশেষজ্ঞ ডাক্তার</small>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>১০০০+</span>
+                        <small>সফল অ্যাপয়েন্টমেন্ট</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-image">
+                <i class="fas fa-hospital-user"></i>
+            </div>
+        </div>
+    </section>
 
-<div>
-<a href="login.html" class="btn btn-light">
-Login
-</a>
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="section-header">
+                <h2>আমাদের সম্পর্কে</h2>
+                <p>তুফানগঞ্জ মিশন ফার্মেসির যাত্রা ও লক্ষ্য</p>
+            </div>
+            
+            <div class="about-grid">
+                <div class="about-content">
+                    <h3>আমাদের মিশন</h3>
+                    <p>তুফানগঞ্জ মিশন ফার্মেসি ২০২০ সালে প্রতিষ্ঠিত হয়। আমাদের লক্ষ্য হলো তুফানগঞ্জ ও এর আশেপাশের এলাকার মানুষদের জন্য সাশ্রয়ী মূল্যে উন্নতমানের স্বাস্থ্য সেবা পৌঁছে দেওয়া।</p>
+                    
+                    <div class="about-features">
+                        <div class="feature">
+                            <i class="fas fa-hand-holding-heart"></i>
+                            <div>
+                                <h4>মানবিক সেবা</h4>
+                                <p>সব রোগীকে সমান সম্মান ও যত্ন</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-microscope"></i>
+                            <div>
+                                <h4>আধুনিক প্রযুক্তি</h4>
+                                <p>অত্যাধুনিক চিকিৎসা সরঞ্জাম</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-user-md"></i>
+                            <div>
+                                <h4>বিশেষজ্ঞ ডাক্তার</h4>
+                                <p>অভিজ্ঞ ও দক্ষ চিকিৎসক</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="about-image">
+                    <div class="google-rating">
+                        <i class="fas fa-google"></i>
+                        <div>
+                            <h4>Google Rating</h4>
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <p>4.9/5 - ৪৫টি রিভিউ</p>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial">
+                        <i class="fas fa-quote-left"></i>
+                        <p>"সব ডাক্তারই তুফানগঞ্জ মিশন ফার্মেসির সেরা। খুব ভালো মিশন ফার্মেসি।"</p>
+                        <small>- রোগীর প্রতিক্রিয়া</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<a href="appointment.html" class="btn btn-warning">
-Book Appointment
-</a>
-</div>
-</div>
-</nav>
+    <!-- Doctors Section -->
+    <section class="doctors" id="doctors">
+        <div class="container">
+            <div class="section-header">
+                <h2>আমাদের ডাক্তারগণ</h2>
+                <p>অভিজ্ঞ ও দক্ষ চিকিৎসকদের সাথে পরিচিত হন</p>
+            </div>
+            
+            <div class="doctors-grid">
+                <!-- Doctor 1 -->
+                <div class="doctor-card">
+                    <div class="doctor-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <h4>ডা. সুব্রত মন্ডল</h4>
+                    <span class="doctor-specialty">MBBS, MD (Medicine)</span>
+                    <p>জেনারেল মেডিসিন বিশেষজ্ঞ</p>
+                    <div class="doctor-availability">
+                        <i class="fas fa-clock"></i> সকাল ১০টা - বিকাল ৫টা
+                    </div>
+                </div>
+                
+                <!-- Doctor 2 -->
+                <div class="doctor-card">
+                    <div class="doctor-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <h4>ডা. মৌসুমী সরকার</h4>
+                    <span class="doctor-specialty">MBBS, DGO</span>
+                    <p>স্ত্রীরোগ ও প্রসূতি বিশেষজ্ঞ</p>
+                    <div class="doctor-availability">
+                        <i class="fas fa-clock"></i> সকাল ৯টা - বিকাল ৪টা
+                    </div>
+                </div>
+                
+                <!-- Doctor 3 -->
+                <div class="doctor-card">
+                    <div class="doctor-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <h4>ডা. অমিত রায়</h4>
+                    <span class="doctor-specialty">BAMS, MD (Ayurveda)</span>
+                    <p>আয়ুর্বেদিক বিশেষজ্ঞ</p>
+                    <div class="doctor-availability">
+                        <i class="fas fa-clock"></i> সকাল ১১টা - বিকাল ৬টা
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<section class="hero">
-<h1>Trusted Healthcare & Pharmacy Services</h1>
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header">
+                <h2>আমাদের সেবাসমূহ</h2>
+                <p>আমরা যে সকল স্বাস্থ্য সেবা প্রদান করি</p>
+            </div>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-stethoscope"></i>
+                    <h4>জেনারেল চেকআপ</h4>
+                    <p>সম্পূর্ণ শারীরিক পরীক্ষা ও স্বাস্থ্য পরামর্শ</p>
+                </div>
+                
+                <div class="service-card">
+                    <i class="fas fa-heartbeat"></i>
+                    <h4>হার্টের রোগ</h4>
+                    <p>হৃদরোগ নির্ণয় ও চিকিৎসা</p>
+                </div>
+                
+                <div class="service-card">
+                    <i class="fas fa-baby"></i>
+                    <h4>মাতৃত্ব সেবা</h4>
+                    <p>গর্ভাবস্থা ও প্রসব পূর্ববর্তী সেবা</p>
+                </div>
+                
+                <div class="service-card">
+                    <i class="fas fa-brain"></i>
+                    <h4>স্নায়ু রোগ</h4>
+                    <p>স্নায়বিক সমস্যা নির্ণয় ও চিকিৎসা</p>
+                </div>
+                
+                <div class="service-card">
+                    <i class="fas fa-lungs"></i>
+                    <h4>শ্বাসকষ্ট</h4>
+                    <p>হাঁপানি ও শ্বাসজনিত সমস্যার চিকিৎসা</p>
+                </div>
+                
+                <div class="service-card">
+                    <i class="fas fa-pills"></i>
+                    <h4>ঔষধ সেবা</h4>
+                    <p>প্রেসক্রিপশন অনুযায়ী ঔষধ সরবরাহ</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<p>
-Quality Medicines, Expert Doctors and Caring Service
-</p>
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2>যোগাযোগ করুন</h2>
+                <p>আমাদের সাথে যোগাযোগের জন্য নিচের তথ্য ব্যবহার করুন</p>
+            </div>
+            
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>ঠিকানা</h4>
+                            <p>তুফানগঞ্জ, কোচবিহার, পশ্চিমবঙ্গ</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>ফোন</h4>
+                            <p><a href="tel:+916023195991">+91 60231 95991</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>ইমেইল</h4>
+                            <p><a href="mailto:info@tufanganjpharmacy.com">info@tufanganjpharmacy.com</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h4>খোলার সময়</h4>
+                            <p>সোম-শনি: সকাল ৮টা - রাত ৯টা<br>রবিবার: সকাল ১০টা - বিকাল ৫টা</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-map">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d28612.653561982144!2d89.633333!3d26.316667!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39e3e8c8d4f3f7e7%3A0x8d7f3b7e5d7f3b7e!2sTufanganj%2C%20West%20Bengal!5e0!3m2!1sen!2sin!4v1700000000000" 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<a href="appointment.html" class="btn btn-light btn-lg">
-Book Appointment
-</a>
-</section>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3><i class="fas fa-hospital"></i> Tufanganj Mission Pharmacy</h3>
+                    <p>আপনার স্বাস্থ্য সেবায় বিশ্বস্ত সঙ্গী। গুণগত মান ও মানবিক সেবার প্রতিশ্রুতি।</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>দ্রুত লিংক</h4>
+                    <a href="#home">হোম</a>
+                    <a href="#about">আমাদের সম্পর্কে</a>
+                    <a href="#doctors">ডাক্তারগণ</a>
+                    <a href="#services">সেবাসমূহ</a>
+                    <a href="#contact">যোগাযোগ</a>
+                </div>
+                
+                <div class="footer-contact">
+                    <h4>যোগাযোগ</h4>
+                    <p><i class="fas fa-phone"></i> +91 60231 95991</p>
+                    <p><i class="fas fa-envelope"></i> info@tufanganjpharmacy.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> তুফানগঞ্জ, কোচবিহার</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Tufanganj Mission Pharmacy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 
-<section class="container py-5">
-<h2 class="text-center mb-4">
-Google Reviews
-</h2>
-
-<div class="row">
-
-<div class="col-md-4">
-<div class="review-card">
-⭐⭐⭐⭐⭐
-<p>Very good mission pharmacy</p>
-</div>
-</div>
-
-<div class="col-md-4">
-<div class="review-card">
-⭐⭐⭐⭐⭐
-<p>All doctors are very good and owner is good.</p>
-</div>
-</div>
-
-<div class="col-md-4">
-<div class="review-card">
-⭐⭐⭐⭐⭐
-<p>All Doctor is best in tufanganj mission pharmacy</p>
-</div>
-</div>
-
-</div>
-</section>
-
-<footer>
-📞 +91 60231 9591
-</footer>
-
+    <script src="script.js"></script>
 </body>
 </html>
