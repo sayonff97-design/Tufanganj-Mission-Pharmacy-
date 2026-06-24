@@ -1,71 +1,681 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Book Appointment</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-body{
-font-family:Arial;
-background:#f4f4f4;
-padding:20px;
-}
-
-.container{
-max-width:500px;
-margin:auto;
-background:white;
-padding:20px;
-border-radius:10px;
-}
-
-input,select{
-width:100%;
-padding:10px;
-margin:10px 0;
-}
-
-button{
-background:#0d6efd;
-color:white;
-border:none;
-padding:12px;
-width:100%;
-cursor:pointer;
-}
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - Tufanganj Mission Pharmacy</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== APPOINTMENT PAGE SPECIFIC STYLES ===== */
+        .appointment-page {
+            padding: 120px 0 80px;
+            background: var(--gray-50);
+            min-height: 100vh;
+        }
+        
+        .appointment-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        .appointment-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            padding: 48px;
+        }
+        
+        .appointment-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .appointment-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+        
+        .appointment-header p {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+        
+        .appointment-header .icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+        
+        .form-group label .required {
+            color: #ef4444;
+            margin-left: 4px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            transition: var(--transition);
+            font-family: inherit;
+            background: var(--white);
+            color: var(--text-dark);
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(10, 126, 140, 0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .form-group .error-message {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 4px;
+            display: none;
+        }
+        
+        .form-group.error input,
+        .form-group.error select,
+        .form-group.error textarea {
+            border-color: #ef4444;
+        }
+        
+        .form-group.error .error-message {
+            display: block;
+        }
+        
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: var(--gradient);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* ===== LOADING SPINNER ===== */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 0.8s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* ===== SUCCESS MESSAGE ===== */
+        .success-message {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .success-message .icon {
+            font-size: 4rem;
+            color: #10b981;
+            margin-bottom: 16px;
+        }
+        
+        .success-message h2 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+        
+        .success-message p {
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+        
+        .success-message .appointment-id {
+            background: var(--primary-light);
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            display: inline-block;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin: 16px 0;
+            letter-spacing: 1px;
+        }
+        
+        /* ===== AUTH REQUIRED ===== */
+        .auth-required {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .auth-required .icon {
+            font-size: 4rem;
+            color: var(--secondary);
+            margin-bottom: 16px;
+        }
+        
+        .auth-required h2 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+        
+        .auth-required p {
+            color: var(--text-light);
+            margin-bottom: 24px;
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .appointment-card {
+                padding: 24px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .appointment-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .appointment-card {
+                padding: 16px;
+            }
+            
+            .appointment-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo" onclick="window.location.href='index.html'">
+                <i class="fas fa-heartbeat"></i>
+                <span>Tufanganj <span class="highlight">Mission</span> Pharmacy</span>
+            </div>
+            
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html#home">Home</a>
+                <a href="index.html#about">About</a>
+                <a href="index.html#doctors">Doctors</a>
+                <a href="index.html#services">Services</a>
+                <a href="index.html#contact">Contact</a>
+            </div>
+            
+            <div class="nav-actions">
+                <button class="btn-appointment" onclick="window.location.href='appointment.html'">
+                    <i class="fas fa-calendar-check"></i> Book Appointment
+                </button>
+                <button class="btn-login" id="loginBtn">
+                    <i class="fas fa-user"></i> <span id="authText">Login</span>
+                </button>
+            </div>
+            
+            <div class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
 
-<div class="container">
+    <!-- ===== APPOINTMENT PAGE ===== -->
+    <section class="appointment-page">
+        <div class="appointment-container">
+            <div class="appointment-card" id="appointmentCard">
+                <!-- Content will be rendered by JavaScript -->
+                <div id="appointmentContent"></div>
+            </div>
+        </div>
+    </section>
 
-<h2>Book Appointment</h2>
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3><i class="fas fa-heartbeat"></i> Tufanganj <span>Mission</span> Pharmacy</h3>
+                    <p>Your trusted healthcare partner providing quality medical services with compassion and excellence.</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <a href="index.html#home">Home</a>
+                    <a href="index.html#about">About Us</a>
+                    <a href="index.html#doctors">Doctors</a>
+                    <a href="index.html#services">Services</a>
+                    <a href="index.html#contact">Contact</a>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Our Services</h4>
+                    <a href="#">General Checkup</a>
+                    <a href="#">Cardiology</a>
+                    <a href="#">Maternity Care</a>
+                    <a href="#">Pediatrics</a>
+                    <a href="#">Pharmacy</a>
+                </div>
+                
+                <div class="footer-contact">
+                    <h4>Contact Info</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> Tufanganj, Cooch Behar</p>
+                    <p><i class="fas fa-phone"></i> <a href="tel:+916023195991">+91 60231 95991</a></p>
+                    <p><i class="fas fa-envelope"></i> <a href="mailto:info@tufanganjpharmacy.com">info@tufanganjpharmacy.com</a></p>
+                    <p><i class="fas fa-clock"></i> Mon-Sat: 8 AM - 9 PM</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Tufanganj Mission Pharmacy. All Rights Reserved.</p>
+                <p>Made with <i class="fas fa-heart" style="color: #ff6b35;"></i> for better healthcare</p>
+            </div>
+        </div>
+    </footer>
 
-<form>
+    <!-- ===== SCROLL TO TOP ===== -->
+    <button class="scroll-top" id="scrollTopBtn">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
-<input type="text" placeholder="Patient Name" required>
-
-<input type="tel" placeholder="Phone Number" required>
-
-<input type="email" placeholder="Email" required>
-
-<select required>
-<option>Select Doctor</option>
-<option>Dr. Sen</option>
-<option>Dr. Roy</option>
-<option>Dr. Das</option>
-</select>
-
-<input type="date" required>
-
-<button type="submit">
-Submit Appointment
-</button>
-
-</form>
-
-</div>
-
+    <!-- ===== SCRIPTS ===== -->
+    <script src="script.js"></script>
+    <script>
+        // ============================================
+        // FIREBASE CONFIGURATION (YOUR CREDENTIALS)
+        // ============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAnQj7leUb86PwvOOhIIBhkQja0fvLzDNs",
+            authDomain: "tufanganj-mission-pharmacy.firebaseapp.com",
+            projectId: "tufanganj-mission-pharmacy",
+            storageBucket: "tufanganj-mission-pharmacy.firebasestorage.app",
+            messagingSenderId: "73171110361",
+            appId: "1:73171110361:web:0b519bdcd67bff4bac71c8",
+            measurementId: "G-JNR5F3F0MF"
+        };
+        
+        // ============================================
+        // INITIALIZE FIREBASE
+        // ============================================
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // ============================================
+        // DOM REFS
+        // ============================================
+        const content = document.getElementById('appointmentContent');
+        const loginBtn = document.getElementById('loginBtn');
+        const authText = document.getElementById('authText');
+        
+        // ============================================
+        // DOCTORS LIST
+        // ============================================
+        const doctors = [
+            'Dr. Subrata Mondal (General Medicine)',
+            'Dr. Mousumi Sarkar (Gynecology)',
+            'Dr. Amit Roy (Ayurveda)',
+            'Dr. Soma Das (Pediatrics)'
+        ];
+        
+        // ============================================
+        // CHECK AUTH STATE
+        // ============================================
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                authText.textContent = 'Dashboard';
+                loginBtn.onclick = () => window.location.href = 'dashboard.html';
+                renderAppointmentForm(user);
+            } else {
+                authText.textContent = 'Login';
+                loginBtn.onclick = () => window.location.href = 'login.html';
+                renderAuthRequired();
+            }
+        });
+        
+        // ============================================
+        // RENDER APPOINTMENT FORM
+        // ============================================
+        function renderAppointmentForm(user) {
+            content.innerHTML = `
+                <div class="appointment-header">
+                    <div class="icon"><i class="fas fa-calendar-plus"></i></div>
+                    <h1>Book Your Appointment</h1>
+                    <p>Fill in the details below to schedule your visit</p>
+                </div>
+                
+                <form id="appointmentForm" novalidate>
+                    <div class="form-group">
+                        <label>Patient Name <span class="required">*</span></label>
+                        <input type="text" id="patientName" placeholder="Enter your full name" required value="${user.displayName || ''}">
+                        <div class="error-message">Please enter your full name</div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Phone Number <span class="required">*</span></label>
+                            <input type="tel" id="patientPhone" placeholder="Enter phone number" required>
+                            <div class="error-message">Please enter a valid phone number</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Age <span class="required">*</span></label>
+                            <input type="number" id="patientAge" placeholder="Enter age" required min="1" max="150">
+                            <div class="error-message">Please enter a valid age</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Gender <span class="required">*</span></label>
+                            <select id="patientGender" required>
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <div class="error-message">Please select your gender</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Doctor <span class="required">*</span></label>
+                            <select id="doctorName" required>
+                                <option value="">Select Doctor</option>
+                                ${doctors.map(doc => `<option value="${doc}">${doc}</option>`).join('')}
+                            </select>
+                            <div class="error-message">Please select a doctor</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Date <span class="required">*</span></label>
+                            <input type="date" id="appointmentDate" required>
+                            <div class="error-message">Please select a date</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Time <span class="required">*</span></label>
+                            <input type="time" id="appointmentTime" required>
+                            <div class="error-message">Please select a time</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Problem Description <span class="required">*</span></label>
+                        <textarea id="problemDescription" placeholder="Briefly describe your health concern..." required></textarea>
+                        <div class="error-message">Please describe your problem</div>
+                    </div>
+                    
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <i class="fas fa-check-circle"></i> Book Appointment
+                    </button>
+                </form>
+            `;
+            
+            // Set min date to today
+            const dateInput = document.getElementById('appointmentDate');
+            if (dateInput) {
+                const today = new Date().toISOString().split('T')[0];
+                dateInput.setAttribute('min', today);
+            }
+            
+            // Form submission
+            document.getElementById('appointmentForm').addEventListener('submit', handleAppointmentSubmit);
+        }
+        
+        // ============================================
+        // RENDER AUTH REQUIRED
+        // ============================================
+        function renderAuthRequired() {
+            content.innerHTML = `
+                <div class="auth-required">
+                    <div class="icon"><i class="fas fa-lock"></i></div>
+                    <h2>Login Required</h2>
+                    <p>Please login or register to book an appointment.</p>
+                    <div class="auth-buttons">
+                        <button class="btn-primary" onclick="window.location.href='login.html'">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                        <button class="btn-secondary" onclick="window.location.href='register.html'">
+                            <i class="fas fa-user-plus"></i> Register
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // ============================================
+        // RENDER SUCCESS
+        // ============================================
+        function renderSuccess(appointmentId, data) {
+            content.innerHTML = `
+                <div class="success-message">
+                    <div class="icon"><i class="fas fa-check-circle"></i></div>
+                    <h2>Appointment Booked! 🎉</h2>
+                    <p>Your appointment has been confirmed successfully.</p>
+                    <div class="appointment-id">📋 ID: ${appointmentId}</div>
+                    <p><strong>Doctor:</strong> ${data.doctorName}</p>
+                    <p><strong>Date:</strong> ${data.date}</p>
+                    <p><strong>Time:</strong> ${data.time}</p>
+                    <br>
+                    <button class="btn-primary" onclick="window.location.href='index.html'">
+                        <i class="fas fa-home"></i> Back to Home
+                    </button>
+                    <button class="btn-secondary" style="margin-left:12px;" onclick="window.location.reload()">
+                        <i class="fas fa-plus"></i> Book Another
+                    </button>
+                </div>
+            `;
+            
+            // Scroll to top of card
+            document.querySelector('.appointment-card').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // ============================================
+        // HANDLE APPOINTMENT SUBMIT
+        // ============================================
+        async function handleAppointmentSubmit(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Validate all fields
+            let isValid = true;
+            const fields = form.querySelectorAll('input, select, textarea');
+            
+            fields.forEach(field => {
+                const group = field.closest('.form-group');
+                if (group) {
+                    group.classList.remove('error');
+                    if (field.hasAttribute('required') && !field.value.trim()) {
+                        group.classList.add('error');
+                        isValid = false;
+                    }
+                    // Phone validation
+                    if (field.id === 'patientPhone' && field.value.trim()) {
+                        const phone = field.value.trim();
+                        if (phone.length < 10 || !/^\d+$/.test(phone)) {
+                            group.classList.add('error');
+                            isValid = false;
+                        }
+                    }
+                    // Age validation
+                    if (field.id === 'patientAge' && field.value.trim()) {
+                        const age = parseInt(field.value);
+                        if (age < 1 || age > 150) {
+                            group.classList.add('error');
+                            isValid = false;
+                        }
+                    }
+                }
+            });
+            
+            if (!isValid) {
+                // Scroll to first error
+                const firstError = form.querySelector('.form-group.error');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                return;
+            }
+            
+            // Get form data
+            const data = {
+                patientName: document.getElementById('patientName').value.trim(),
+                patientPhone: document.getElementById('patientPhone').value.trim(),
+                patientAge: parseInt(document.getElementById('patientAge').value),
+                patientGender: document.getElementById('patientGender').value,
+                doctorName: document.getElementById('doctorName').value,
+                date: document.getElementById('appointmentDate').value,
+                time: document.getElementById('appointmentTime').value,
+                problemDescription: document.getElementById('problemDescription').value.trim(),
+                userId: auth.currentUser?.uid || 'anonymous',
+                userEmail: auth.currentUser?.email || 'unknown',
+                status: 'pending',
+                createdAt: new Date().toISOString()
+            };
+            
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span> Booking...';
+            
+            try {
+                // Generate appointment ID
+                const appointmentId = 'APPT-' + Date.now().toString().slice(-8) + 
+                                     '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+                
+                // Save to Firestore
+                await db.collection('appointments').doc(appointmentId).set({
+                    ...data,
+                    appointmentId: appointmentId
+                });
+                
+                // Show success
+                renderSuccess(appointmentId, data);
+                
+            } catch (error) {
+                console.error('Error booking appointment:', error);
+                alert('❌ Failed to book appointment. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Book Appointment';
+            }
+        }
+        
+        // ============================================
+        // INTEGRATION WITH MAIN SCRIPT
+        // ============================================
+        
+        // Mobile menu toggle
+        document.getElementById('hamburger')?.addEventListener('click', function() {
+            const menu = document.getElementById('navMenu');
+            menu.classList.toggle('active');
+            const icon = this.querySelector('i');
+            icon.className = menu.classList.contains('active') ? 'fas fa-times' : 'fas fa-bars';
+        });
+        
+        // Close menu on link click
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navMenu').classList.remove('active');
+                const icon = document.querySelector('#hamburger i');
+                if (icon) icon.className = 'fas fa-bars';
+            });
+        });
+        
+        // Scroll to top button
+        const scrollBtn = document.getElementById('scrollTopBtn');
+        window.addEventListener('scroll', () => {
+            if (scrollBtn) {
+                if (window.scrollY > 300) {
+                    scrollBtn.classList.add('visible');
+                } else {
+                    scrollBtn.classList.remove('visible');
+                }
+            }
+        });
+        scrollBtn?.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        console.log('📋 Appointment page loaded successfully!');
+        console.log('🔥 Firebase initialized with your credentials');
+    </script>
 </body>
 </html>
